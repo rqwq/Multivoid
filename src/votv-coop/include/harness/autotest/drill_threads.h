@@ -220,5 +220,7 @@ DWORD WINAPI PropPropsThread(LPVOID arg);
 DWORD WINAPI DroneHoverThread(LPVOID arg);
 // VOTVCOOP_RUN_SEAT_RAGDOLL, both peers -- harness/autotest/autotest_seat_ragdoll.cpp
 DWORD WINAPI SeatRagdollThread(LPVOID arg);
+// VOTVCOOP_RUN_CHIPPER_FEED, both peers -- harness/autotest/autotest_chipper_feed.cpp
+DWORD WINAPI ChipperFeedThread(LPVOID arg);
 
 }  // namespace harness::autotest
