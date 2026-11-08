@@ -224,5 +224,7 @@ DWORD WINAPI SeatRagdollThread(LPVOID arg);
 DWORD WINAPI ChipperFeedThread(LPVOID arg);
 // VOTVCOOP_RUN_BODY_PUSH, both peers -- harness/autotest/autotest_body_push.cpp
 DWORD WINAPI BodyPushThread(LPVOID arg);
+// VOTVCOOP_FILL_NEEDS, both peers -- harness/autotest/autotest_fill_needs.cpp
+DWORD WINAPI FillNeedsThread(LPVOID arg);
 
 }  // namespace harness::autotest
