@@ -25,7 +25,11 @@ namespace coop::thanks_list {
 struct Section {
     std::string title;               // UTF-8, as written; a word of the menu's sentence ("testers")
     uint32_t    rgb = 0xFFFFFF;      // sRGB 0xRRGGBB: the colour of that word and of every name below
-    bool        apart = false;       // `apart`: its names stand in a column of their own
+    bool        apart = false;       // `apart`: its names stand in a column of their own, after the others
+    // `lead`: its names stand in a column of their own, BEFORE the others, and its title is a line
+    // of its own under the legend rather than a word in it -- for a block credited beside the roll
+    // (this build's developers) rather than a role the roll's colours decode.
+    bool        lead = false;
     std::vector<std::string> names;  // UTF-8, one per line of the file
 };
 

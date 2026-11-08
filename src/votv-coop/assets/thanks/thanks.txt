@@ -10,13 +10,17 @@
 ; line, raise the revision and publish the file to the master.
 ;
 ; Format: `key = value` lines first, then sections. A section opens with `[title] #RRGGBB`
-; and, optionally, the word `apart`, which gives its names a column of their own:
-; the title is a word of the menu's sentence ("<title line> testers, bug reporters and ...:"),
-; drawn in the section's colour, and every name under it is drawn in that colour too. The
-; sentence is the legend, so write titles the way they read in it. Every other line is one
-; name, shown as written. A line starting with `;` is a comment.
+; and, optionally, the words `apart` and `lead`:
+;   `apart` gives its names a column of their own, after the others;
+;   `lead` gives its names a column of their own BEFORE the others, and makes its title a line
+;   of its own under the legend instead of a word in it -- for a block credited beside the roll
+;   (this build's developers) rather than a role the roll's colours decode.
+; For an ordinary section the title is a word of the menu's sentence ("<title line> testers, bug
+; reporters and ...:"), drawn in the section's colour, and every name under it is drawn in that
+; colour too. The sentence is the legend, so write titles the way they read in it. Every other
+; line is one name, shown as written. A line starting with `;` is a comment.
 
-revision = 14
+revision = 15
 title = Multivoid would like to thank
 
 [testers] #9EEAB3
@@ -88,6 +92,6 @@ doctaaaa
 VOIC4IK
 Андрей Гольба
 
-[Build Developers] #FFD700
+[* Developers of this Build] #FFD700 lead
 acceleration
 Dots

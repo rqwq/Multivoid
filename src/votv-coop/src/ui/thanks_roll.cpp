@@ -63,14 +63,13 @@ constexpr float kGutter = 16.f;            // between the columns
 constexpr float kApartGutter = 28.f;       // before the column that stands apart
 constexpr int32_t kNamePt = 10;
 constexpr int32_t kSentencePt = 12;   // the legend reads a step above the names it explains
-// The build's developer line, in yellow: the hue the thanks list's "Build Developers" section
-// names its people in, so one colour means one thing across this screen.
-constexpr uint32_t kBuildDevRgb = 0xFFD700;
 // A list this short stays in one column; a longer one is dealt into two of equal length, which
-// roll as one and halve the time a name waits for its turn. Sections marked `apart` are not
-// dealt: their names get a column of their own after the others.
+// roll as one and halve the time a name waits for its turn. Sections marked `lead` or `apart` are
+// not dealt: their names get a column of their own, before or after the others.
 constexpr size_t kOneColumnNames = 6;
-constexpr int kMaxColumns = 3;
+// A lead column, the two common columns and an apart column: the most the row can hold before the
+// panel's width bound starts clipping tails.
+constexpr int kMaxColumns = 4;
 // The game rolls its list at 3 lines a second past a window 45 lines tall; past one 6 lines tall
 // that speed leaves a name on screen for 2 seconds. Half of it keeps a name readable. The window
 // is shorter than it was (kWindowH), so the same speed would flash a name past in about a second
@@ -127,38 +126,48 @@ void* RowsContainer(void* versionText) {
 }
 
 // The sentence is the legend: the title in the amber of the game's own "Patrons Tier III"
-// header across the screen, under it this build's developers in yellow, and on the line under
-// that each section's name in that section's colour ("testers, bug reporters and Boosty
-// supporters:"), which is what the colours below mean. Three lines, so the legend does not run
-// across the whole sky. The names carry no headers.
+// header across the screen, under it each role in that role's colour ("testers, bug reporters,
+// contributors and Boosty supporters:"), which is what the colours below mean, and under that a
+// line of its own for each `lead` section's title in that section's colour ("* Developers of this
+// Build") -- a block credited beside the roll rather than a role the roll decodes. Three lines, so
+// the legend does not run across the whole sky. The names carry no headers.
 bool AddSentence(void* root, const List& list) {
     const std::wstring title = Wide(list.title);
     void* head = title.empty() ? nullptr
                                : NS::AddText(root, title.c_str(), kSentencePt, NS::Amber(), NS::kJustLeft, 0.f);
     if (!title.empty() && !head) return false;
     PadSlot(NS::SlotOf(head), P::off::UVerticalBoxSlot_Padding, 0.f, kGapAboveSentence, 0.f, 0.f);
-    // This build's developers, on a line of their own under the title: the fork's credit is read
-    // before the roll's colours are decoded, so it is not a section the legend has to account for.
-    void* devs = NS::AddText(root, L"* Developers of this Build", kSentencePt, Colour(kBuildDevRgb),
-                             NS::kJustLeft, 0.f);
-    if (!devs) return false;
-    PadSlot(NS::SlotOf(devs), P::off::UVerticalBoxSlot_Padding, 0.f,
-            title.empty() ? kGapAboveSentence : kGapUnderTitle, 0.f, 0.f);
     void* row = NS::Spawn(L"HorizontalBox", root);
     if (!row) return false;
     auto word = [row](const std::wstring& text, const ue_wrap::FLinearColor& col) {
         return text.empty() || NS::AddText(row, text.c_str(), kSentencePt, col, NS::kJustLeft, 0.f);
     };
-    const size_t n = list.sections.size();
-    for (size_t i = 0; i < n; ++i) {
-        if (!word(Wide(list.sections[i].title), Colour(list.sections[i].rgb))) return false;
-        const wchar_t* joint = i + 1 == n ? L":" : (i + 2 == n ? L" and " : L", ");
+    // The legend names the roles the roll's colours decode; a `lead` section is not one of them,
+    // so its title is left out here and drawn on its own line below instead.
+    std::vector<const Section*> lead;
+    size_t roles = 0;
+    for (const Section& s : list.sections) {
+        if (s.lead) lead.push_back(&s);
+        else ++roles;
+    }
+    size_t seen = 0;
+    for (const Section& s : list.sections) {
+        if (s.lead) continue;
+        if (!word(Wide(s.title), Colour(s.rgb))) return false;
+        const wchar_t* joint = ++seen == roles ? L":" : (seen + 1 == roles ? L" and " : L", ");
         if (!word(joint, NS::Amber())) return false;
     }
-    // The legend row sits tight under the developer line: it is the last of the sentence's lines,
-    // and the window below it carries its own gap (kGapUnderSentence).
+    // The legend row sits tight under the title, as the middle of the sentence's lines.
     PadSlot(NS::AddVFill(root, row, 0.f, NS::kLeft, NS::kTop),
             P::off::UVerticalBoxSlot_Padding, 0.f, 0.f, 0.f, 0.f);
+    // Each `lead` section's title, on a line of its own under the legend and in that section's
+    // colour: this build's developers are credited beside the roll, not as a role inside it.
+    for (const Section* s : lead) {
+        void* line = NS::AddText(root, Wide(s->title).c_str(), kSentencePt, Colour(s->rgb),
+                                 NS::kJustLeft, 0.f);
+        if (!line) return false;
+        PadSlot(NS::SlotOf(line), P::off::UVerticalBoxSlot_Padding, 0.f, kGapUnderTitle, 0.f, 0.f);
+    }
     return true;
 }
 
@@ -228,19 +237,27 @@ bool Build(void* container, const List& list) {
 
     // Every name in the list's own order. The columns are not the sections: with the legend in
     // the sentence a column has no title to keep, so the common names are dealt by count down one
-    // column and then the next, and the colours alone say who is who. The sections that stand
-    // apart keep a column to themselves, after the others.
-    std::vector<Entry> common, apart;
+    // column and then the next, and the colours alone say who is who. A `lead` section keeps a
+    // column of its own BEFORE the others (this build's developers, read first); an `apart` one
+    // keeps a column of its own after them.
+    std::vector<Entry> common, lead, apart;
     for (const Section& s : list.sections)
-        for (const std::string& n : s.names) (s.apart ? apart : common).push_back(Entry{&n, &s});
+        for (const std::string& n : s.names)
+            (s.lead ? lead : s.apart ? apart : common).push_back(Entry{&n, &s});
     for (Column& c : g_columns) c = Column{};
     int used = 0;
+    if (!lead.empty() &&
+        !BuildColumn(columns, lead.data(), lead.size(), 0, 0.f, g_columns[used++]))
+        return false;
+    // The common columns keep their gutter between them whether or not a lead column precedes,
+    // so the pair reads as one block with the lead column standing off its left.
+    const float commonPad = lead.empty() ? 0.f : kGutter;
     if (!common.empty() && common.size() <= kOneColumnNames) {
-        if (!BuildColumn(columns, common.data(), common.size(), 0, 0.f, g_columns[used++])) return false;
+        if (!BuildColumn(columns, common.data(), common.size(), 0, commonPad, g_columns[used++])) return false;
     } else if (!common.empty()) {
         const size_t firstCount = (common.size() + 1) / 2;
         const size_t secondCount = common.size() - firstCount;
-        if (!BuildColumn(columns, common.data(), firstCount, 0, 0.f, g_columns[used++])) return false;
+        if (!BuildColumn(columns, common.data(), firstCount, 0, commonPad, g_columns[used++])) return false;
         if (!BuildColumn(columns, common.data() + firstCount, secondCount,
                          static_cast<int>(firstCount - secondCount), kGutter, g_columns[used++]))
             return false;
