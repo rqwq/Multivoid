@@ -243,6 +243,7 @@ set(VOTVCOOP_SOURCES
     src/coop/props/prop_destroy_seam.cpp
     src/coop/props/prop_lifecycle.cpp
     src/coop/props/prop_food_state.cpp
+    src/coop/props/body_push.cpp
     src/coop/world/vent_crawler_sync.cpp
     src/coop/props/prop_food_sync.cpp
     src/coop/props/food_tick_gate.cpp
@@ -668,6 +669,7 @@ set(VOTVCOOP_SOURCES
     src/harness/autotest/autotest_slip.cpp
     src/harness/autotest/autotest_flash_battery.cpp
     src/harness/autotest/autotest_chipper_feed.cpp
+    src/harness/autotest/autotest_body_push.cpp
     src/harness/autotest/peer_signal.cpp
     src/harness/autotest/meet.cpp
     src/harness/autotest/autotest_seat_ragdoll.cpp

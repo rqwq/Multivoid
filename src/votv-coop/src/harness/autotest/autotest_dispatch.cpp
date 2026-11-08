@@ -216,6 +216,7 @@ void SpawnEnvGatedTests(coop::net::Role role) {
     // A device's claim when its user ragdolls.
     SpawnIf("VOTVCOOP_RUN_SEAT_RAGDOLL", "seat ragdoll drill", &SeatRagdollThread, role);
     SpawnIf("VOTVCOOP_RUN_CHIPPER_FEED", "chipper feed drill", &ChipperFeedThread, role);
+    SpawnIf("VOTVCOOP_RUN_BODY_PUSH", "body push drill", &BodyPushThread, role);
     // The bot-director halt probe, solo: measures the path query over the baked NavMesh and a
     // reflected AddMovementInput moving the possessed body.
     SpawnIf("VOTVCOOP_RUN_NAV_PROBE", "nav HALT probe (director Phase-0)", &NavHaltProbeThread, role);
