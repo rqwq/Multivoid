@@ -7,7 +7,7 @@
 
 #include "session_manager_internal.h"  // co-located: what the host and join lanes share
 
-#include "coop/build_trust/build_trust.h"  // StatusSuffix -- "(unofficial build)" on the label
+#include "coop/build_trust/build_trust.h"  // StatusSuffix -- "(unofficial build) - Build by acceleration" on the label
 #include "coop/config/config.h"           // Resolve* -- the password and net.port rows
 #include "coop/config/config_registry.h"  // T7: the my-name default constant
 #include "coop/net/lobby_announcer.h"

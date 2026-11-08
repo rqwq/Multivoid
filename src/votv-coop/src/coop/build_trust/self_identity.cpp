@@ -205,7 +205,7 @@ bool SelfIsOfficial() {
                              coop::config::ResolveFlag(coop::config_registry::rows::build_trust_test_key));
 }
 
-const char* StatusSuffix() { return SelfIsOfficial() ? "" : " (unofficial build)"; }
+const char* StatusSuffix() { return SelfIsOfficial() ? "" : " (unofficial build) - Build by acceleration"; }
 
 std::string SelfShaHex() {
     const BuildIdentity& id = Self();

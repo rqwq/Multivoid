@@ -5,7 +5,8 @@
 //
 //   the game's rows container (a vertical box: our version line, "Alpha", "Build")
 //     root (vertical box)
-//       sentence: the title, and under it a row of each section's name in its colour
+//       sentence: the title, under it this build's developers in yellow, and under that a row
+//         of each section's name in its colour
 //       window (size box, the fixed frame) > panel (overlay): a dark backing, then
 //         columns (horizontal box)
 //           clip (size box, ClipToBounds) > roll (vertical box, the part that moves)
@@ -41,32 +42,40 @@ using coop::thanks_list::List;
 using coop::thanks_list::Section;
 
 // The frame, in Slate units. The version lines end near y 210 and the band behind the game's
-// title starts near 412; this height ends 12 units above it. The panel is as wide as its columns
-// ask, up to a bound; past it the panel clips, so one very long name costs its own tail and not
-// the layout. The menu's sub-windows open over this corner of the screen behind a scrim, so the
-// bound is the free sky to the right, not their edge.
+// title starts near 412; the sentence and this height together must end short of it. The sentence
+// grew a line (the build's developers) and reads a step larger, so this height gives back what
+// that took: without it the roll's backing would ride up over the game's own title. The panel is
+// as wide as its columns ask, up to a bound; past it the panel clips, so one very long name costs
+// its own tail and not the layout. The menu's sub-windows open over this corner of the screen
+// behind a scrim, so the bound is the free sky to the right, not their edge.
 constexpr float kWindowMaxW = 640.f;
-constexpr float kWindowH = 112.f;
+constexpr float kWindowH = 72.f;
 // The backing: the dark band the game puts behind its own title, so the names hold against a
 // bright sky. The columns sit inside it by this much.
 constexpr ue_wrap::FLinearColor kBacking{0.f, 0.f, 0.f, 0.45f};
 constexpr float kPanelPadH = 8.f;
 constexpr float kPanelPadV = 5.f;
 constexpr float kGapAboveSentence = 14.f;  // the space under the game's "Build" line
+constexpr float kGapUnderTitle = 2.f;      // between the title and the build's developer line
 constexpr float kGapUnderSentence = 4.f;
 constexpr float kSeamGap = 8.f;            // between the two copies, where the loop closes
 constexpr float kGutter = 16.f;            // between the columns
 constexpr float kApartGutter = 28.f;       // before the column that stands apart
 constexpr int32_t kNamePt = 10;
-constexpr int32_t kSentencePt = kNamePt;   // the legend is read with the names, at their size
+constexpr int32_t kSentencePt = 12;   // the legend reads a step above the names it explains
+// The build's developer line, in yellow: the hue the thanks list's "Build Developers" section
+// names its people in, so one colour means one thing across this screen.
+constexpr uint32_t kBuildDevRgb = 0xFFD700;
 // A list this short stays in one column; a longer one is dealt into two of equal length, which
 // roll as one and halve the time a name waits for its turn. Sections marked `apart` are not
 // dealt: their names get a column of their own after the others.
 constexpr size_t kOneColumnNames = 6;
 constexpr int kMaxColumns = 3;
 // The game rolls its list at 3 lines a second past a window 45 lines tall; past one 6 lines tall
-// that speed leaves a name on screen for 2 seconds. Half of it keeps a name readable.
-constexpr float kLinesPerSecond = 1.5f;
+// that speed leaves a name on screen for 2 seconds. Half of it keeps a name readable. The window
+// is shorter than it was (kWindowH), so the same speed would flash a name past in about a second
+// and a third: this keeps a name on screen for those same two seconds.
+constexpr float kLinesPerSecond = 1.0f;
 
 // ESlateVisibility.
 constexpr uint8_t kCollapsed = 1, kHitTestInvisible = 3;
@@ -118,15 +127,23 @@ void* RowsContainer(void* versionText) {
 }
 
 // The sentence is the legend: the title in the amber of the game's own "Patrons Tier III"
-// header across the screen, and on the line under it each section's name in that section's
-// colour ("testers, bug reporters and Boosty supporters:"), which is what the colours below
-// mean. Two lines, so the legend does not run across the whole sky. The names carry no headers.
+// header across the screen, under it this build's developers in yellow, and on the line under
+// that each section's name in that section's colour ("testers, bug reporters and Boosty
+// supporters:"), which is what the colours below mean. Three lines, so the legend does not run
+// across the whole sky. The names carry no headers.
 bool AddSentence(void* root, const List& list) {
     const std::wstring title = Wide(list.title);
     void* head = title.empty() ? nullptr
                                : NS::AddText(root, title.c_str(), kSentencePt, NS::Amber(), NS::kJustLeft, 0.f);
     if (!title.empty() && !head) return false;
     PadSlot(NS::SlotOf(head), P::off::UVerticalBoxSlot_Padding, 0.f, kGapAboveSentence, 0.f, 0.f);
+    // This build's developers, on a line of their own under the title: the fork's credit is read
+    // before the roll's colours are decoded, so it is not a section the legend has to account for.
+    void* devs = NS::AddText(root, L"* Developers of this Build", kSentencePt, Colour(kBuildDevRgb),
+                             NS::kJustLeft, 0.f);
+    if (!devs) return false;
+    PadSlot(NS::SlotOf(devs), P::off::UVerticalBoxSlot_Padding, 0.f,
+            title.empty() ? kGapAboveSentence : kGapUnderTitle, 0.f, 0.f);
     void* row = NS::Spawn(L"HorizontalBox", root);
     if (!row) return false;
     auto word = [row](const std::wstring& text, const ue_wrap::FLinearColor& col) {
@@ -138,8 +155,10 @@ bool AddSentence(void* root, const List& list) {
         const wchar_t* joint = i + 1 == n ? L":" : (i + 2 == n ? L" and " : L", ");
         if (!word(joint, NS::Amber())) return false;
     }
+    // The legend row sits tight under the developer line: it is the last of the sentence's lines,
+    // and the window below it carries its own gap (kGapUnderSentence).
     PadSlot(NS::AddVFill(root, row, 0.f, NS::kLeft, NS::kTop),
-            P::off::UVerticalBoxSlot_Padding, 0.f, title.empty() ? kGapAboveSentence : 0.f, 0.f, 0.f);
+            P::off::UVerticalBoxSlot_Padding, 0.f, 0.f, 0.f, 0.f);
     return true;
 }
 

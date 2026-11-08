@@ -64,9 +64,10 @@ build, white as the game's own labels, amber when the master reports a newer rel
 while the master has no released record. The MULTIPLAYER button itself is white, as the menu's own items are.
 
 Under those labels the menu rolls the thanks list (`ui/thanks_roll`): the people the mod thanks.
-Its two-line sentence is its legend: the title in the amber of the game's own "Patrons Tier III"
-header across the screen, and under it each role in that role's colour ("testers, bug reporters,
-contributors and Boosty supporters:"). Below, on a dark backing as wide as the columns, are the
+Its three-line sentence is its legend: the title in the amber of the game's own "Patrons Tier III"
+header across the screen, under it this build's developers in yellow ("* Developers of this
+Build"), and under that each role in that role's colour ("testers, bug reporters, contributors
+and Boosty supporters:"). Below, on a dark backing as wide as the columns, are the
 names and nothing else, each in its role's colour and behind a dash as the game lists its own
 supporters. The columns are not the roles: the common names are dealt by count into two columns
 of equal length that roll as one, and a role marked `apart` keeps a column to itself. It is the
