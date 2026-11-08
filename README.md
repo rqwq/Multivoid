@@ -6,7 +6,7 @@
 
 - ! **This fork was intended for me and my friend's use,
 I will be updating it by adding pull requests from
-the original [repo](https://github.com/VOTV-MP/Multivoid)
+the original [repo](https://github.com/VOTV-MP/Multivoid) that is compatible
 until the official release with all pull requests is available on modloaders.** - *acceleration*
 
 [![Join the Discord](https://img.shields.io/badge/Discord-join%20the%20community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/bA6tGBvGMN)
