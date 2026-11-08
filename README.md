@@ -4,6 +4,11 @@
 > A mod that adds drop-in co-op to a single-player UE4.27 game —
 > **no original game files are modified**.
 
+- ! **This fork was intended for me and my friend's use,
+I will be updating it by adding pull requests from
+the original [repo](https://github.com/VOTV-MP/Multivoid)
+until the official release with all pull requests is available on modloaders.** - *acceleration*
+
 [![Join the Discord](https://img.shields.io/badge/Discord-join%20the%20community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/bA6tGBvGMN)
 [![Support on Boosty](https://img.shields.io/badge/Boosty-support%20the%20project-FF7C00?style=for-the-badge)](https://boosty.to/pelmentor)
 
