@@ -210,6 +210,8 @@ void SpawnEnvGatedTests(coop::net::Role role) {
     SpawnIf("VOTVCOOP_RUN_FOOD_STATE", "world food state drill", &FoodStateThread, role);
     SpawnIf("VOTVCOOP_RUN_WORLD_SOUND", "world sound drill", &WorldSoundThread, role);
     SpawnIf("VOTVCOOP_RUN_MUSHROOM", "mushroom drill", &MushroomThread, role);
+    // The ATV's riders: the driver's body and the kerfur, on both peers.
+    SpawnIf("VOTVCOOP_RUN_ATV_RIDERS", "ATV riders drill", &AtvRidersThread, role);
 
     SpawnIf("VOTVCOOP_RUN_PLANT_STATE", "plant drill", &PlantStateThread, role);
     SpawnIf("VOTVCOOP_RUN_SV_REQUEST", "sv.request drill", &SvRequestThread, role);
