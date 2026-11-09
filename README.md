@@ -8,7 +8,7 @@
 I will be updating it by adding pull requests from
 the original [repo](https://github.com/VOTV-MP/Multivoid) that is compatible
 until the official release with all pull requests is available on modloaders.**
-  * **You can get the build from Releases, just download it, go to r2modmanager or whatever -> Your Profile -> Settings -> Import local mod.** - *acceleration*
+  * **You can get the build from Releases, just download it, go to r2modman or whatever -> Your Profile -> Settings -> Import local mod.** - *acceleration*
 
 [![Join the Discord](https://img.shields.io/badge/Discord-join%20the%20community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/bA6tGBvGMN)
 [![Support on Boosty](https://img.shields.io/badge/Boosty-support%20the%20project-FF7C00?style=for-the-badge)](https://boosty.to/pelmentor)
