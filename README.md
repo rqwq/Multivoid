@@ -4,7 +4,7 @@
 > A mod that adds drop-in co-op to a single-player UE4.27 game —
 > **no original game files are modified**.
 
-- ! **This fork was intended for me and my friend's use,
+- ! **This fork is intended for me and my friend's use,
 I will be updating it by adding pull requests from
 the original [repo](https://github.com/VOTV-MP/Multivoid) that is compatible
 until the official release with all pull requests is available on modloaders.** - *acceleration*
