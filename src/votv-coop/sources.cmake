@@ -549,6 +549,7 @@ set(VOTVCOOP_SOURCES
     src/ui/server_browser_native.cpp
     src/ui/server_browser_panels.cpp
     src/ui/server_browser_rows.cpp
+    src/ui/server_browser_filter.cpp
     src/ui/server_browser_tabs.cpp
     src/ui/server_browser_surface.cpp
     src/ui/server_browser_selftest.cpp
@@ -693,6 +694,7 @@ set(VOTVCOOP_SOURCES
     src/harness/autotest/autotest_sv_request.cpp
     src/harness/autotest/autotest_module_buy.cpp
     src/harness/autotest/autotest_world_sound.cpp
+    src/harness/autotest/autotest_browser_filter.cpp
     src/harness/autotest/autotest_saveui.cpp
     src/harness/autotest/autotest_spill.cpp
     src/harness/autotest/autotest_drone_hover.cpp

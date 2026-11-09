@@ -233,5 +233,7 @@ DWORD WINAPI BodyPushThread(LPVOID arg);
 DWORD WINAPI FillNeedsThread(LPVOID arg);
 // VOTVCOOP_RUN_WORLD_SOUND, both peers -- harness/autotest/autotest_world_sound.cpp
 DWORD WINAPI WorldSoundThread(LPVOID arg);
+// VOTVCOOP_RUN_BROWSER_FILTER, the main menu (harness.cpp) -- harness/autotest/autotest_browser_filter.cpp
+DWORD WINAPI BrowserFilterThread(LPVOID arg);
 
 }  // namespace harness::autotest

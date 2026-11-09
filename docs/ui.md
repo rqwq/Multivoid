@@ -37,6 +37,10 @@ centred, from its 980 by 662 units up to the screen; only the server names' colu
 list's height grow, while the facts beside each name and the panes on the right keep their
 widths. The size is remembered in `browser.width` and `browser.height` when the drag ends. A
 row of tabs
+refused, a Host button and a Join. A "Hide incompatible" checkbox beside Back leaves those
+refused lobbies out of the list, and a "Hide locked" one beside it the lobbies that ask for a
+password; the status pane says how many are hidden. Both start unchecked and are remembered in
+`browser.hide_incompatible` and `browser.hide_locked` (`ui/server_browser_filter`). A row of tabs
 above the list picks which master's list it is, one tab per master, the chosen one filled; the
 choice is remembered in the ini and is also where a hosted game is listed
 (`ui/server_browser_tabs`, [master-server.md](master-server.md)). When a master stops answering,
